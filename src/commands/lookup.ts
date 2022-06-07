@@ -34,7 +34,17 @@ const Lookup: Command = {
             const player_discord = await client.users.fetch(player.discordId);
 
             if (player_discord === undefined)
-                response.setDescription
+                response
+                .setTitle('💡 PLAYER INFORMATION: ' + player.ign)
+                .setDescription(
+                    '🎮 In-Game Name: ' + player.ign + '\n' +
+                    '🔪 Verified hit kills: ' + player.killCount + '\n' +
+                    '🪦 Verified hit deaths: ' + player.deathCount + '\n' +
+                    '⌛ Hit hiring cooldown: ' + player.hiringCooldownString + '\n' +
+                    '⌛ Contracting cooldown: ' + player.contractingCooldownString + '\n' +
+                    '⌛ Hit targetting cooldown: ' + player.targetingCooldownString + '\n' + 
+                    '\`(Could not get discord information)\`'
+                );
             else {
                 let userIcon = player_discord.avatarURL();
                 if (userIcon === null)
