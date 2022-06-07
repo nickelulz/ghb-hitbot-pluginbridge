@@ -1,4 +1,3 @@
-import { save } from "../database";
 import { HIRING_COOLDOWN, TARGETING_COOLDOWN, CONTRACTING_COOLDOWN, ADMIN_TOKEN } from "../constants";
 
 export default class Player {
@@ -91,7 +90,6 @@ export default class Player {
             const cooldown = Math.sign(cooldown_raw) == 1 ? cooldown_raw : 0;
             if (cooldown == 0) {
                 this.lastPlacedHit = false;
-                save();
             }
             return cooldown;
         }   
@@ -121,7 +119,6 @@ export default class Player {
             const cooldown = Math.sign(cooldown_raw) == 1 ? cooldown_raw : 0;
             if (cooldown == 0) {
                 this.lastTargetedHit = false;
-                save();
             }
             return cooldown;
         }
@@ -151,7 +148,6 @@ export default class Player {
             const cooldown = Math.sign(cooldown_raw) == 1 ? cooldown_raw : 0;
             if (cooldown == 0) {
                 this.lastContractedHit = false;
-                save();
             }
             return cooldown;
         }

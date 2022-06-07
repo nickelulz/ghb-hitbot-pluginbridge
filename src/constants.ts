@@ -2,6 +2,33 @@ import dotenv from 'dotenv';
 import logger from './logger';
 
 /**
+ * The amount of cooldown time for buffering between hiring each hit
+ * in minutes. Default is 2 hours.
+ * 
+ * @type number
+ * @constant
+ */
+ export const HIRING_COOLDOWN: number = 120;
+
+ /**
+  * The amount of cooldown time for buffering between contracting for
+  * each hit in minutes. Default is 2 hours.
+  * 
+  * @type number
+  * @constant
+  */
+ export const CONTRACTING_COOLDOWN: number = 120;
+ 
+ /**
+  * The amount of cooldown time for buffering between being targetted on
+  * each hit in minutes. Default is 4 hours.
+  * 
+  * @type number
+  * @constant
+  */
+ export const TARGETING_COOLDOWN: number = 240;
+
+/**
  * Default "image not found"/Error 404 Image URL for embeds and whatnot.
  * 
  * @type string
@@ -93,7 +120,7 @@ if (env.error)
         throw env.error;
 
 // environment/private variables
-export const BOT_TOKEN = process.env.BOT_TOKEN;
+export const BOT_TOKEN = process.env.TOKEN;
 export const ADMIN_TOKEN: string = (process.env.ADMIN_TOKEN === undefined || process.env.ADMIN_TOKEN.trim() === "") ? noRootAdmin() : process.env.ADMIN_TOKEN;
 const SERVER_PORT: number = (process.env.SERVER_PORT === undefined || process.env.SERVER_PORT.trim() === "") ? noPort() : Number(process.env.SERVER_PORT);
 const PLUGIN_PORT: number = (process.env.PLUGIN_PORT === undefined || process.env.PLUGIN_PORT.trim() === "") ? noPluginPort() : Number(process.env.PLUGIN_PORT);
