@@ -4,8 +4,8 @@ import { Server } from "../constants";
 import { getServerStatus } from "../server";
 
 const Status: Command = {
-    name: "server",
-    description: "The blanket command for everything having to deal with the server.",
+    name: "status",
+    description: "Get the server status.",
     type: "CHAT_INPUT",
     run: async (client: Client, interaction: BaseCommandInteraction) => {
         const response = new MessageEmbed();

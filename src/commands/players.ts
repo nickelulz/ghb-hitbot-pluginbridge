@@ -1,6 +1,6 @@
 import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
 import Command from "../types/Command";
-import { isContractor, players, findPlayerByIGN } from '../database';
+import { isContractor, players, findPlayerByIGN, load } from '../database';
 import Player from "../types/Player";
 import { COMMAND_ERROR_MESSAGES, NOT_FOUND_IMG_URL } from "../constants";
 
@@ -20,6 +20,8 @@ const Players: Command = {
     run: async (client: Client, interaction: BaseCommandInteraction) => {
         const response = new MessageEmbed();
         
+        load();
+
         response.description = "";
         for (let i = 0; i < players.length; i++)
             response.description += (i+1) + ": " + players[i].ign + " " + contractorStatus(players[i]) + "\n";

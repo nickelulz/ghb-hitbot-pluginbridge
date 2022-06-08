@@ -1,14 +1,16 @@
+import { StringLiteralLike } from "typescript";
 import { HIRING_COOLDOWN, TARGETING_COOLDOWN, CONTRACTING_COOLDOWN, ADMIN_TOKEN } from "../constants";
 
 export default class Player {
     discordId: string;
     ign: string;
+    uuid: string;
     lastPlacedHit: Date | false;
     lastTargetedHit: Date | false;
     lastContractedHit: Date | false;
     killCount: number;
     deathCount: number;
-    isAdmin: boolean;
+    morbiums: number;
 
     /**
      * The constructor of a Player object.
@@ -21,20 +23,16 @@ export default class Player {
      * @param {number} deathCount (Optional) The number of deaths this user has.
      * @param {boolean} isAdmin (Optional) If this user is an admin.
      */
-    constructor(discordId: string, ign: string, lastPlacedHit?: string, lastTargetedHit?: string, lastContractedHit?: string, killCount?: number, deathCount?: number, isAdmin?: boolean) {
+    constructor(discordId: string, uuid: string, ign: string, lastPlacedHit?: string, lastTargetedHit?: string, lastContractedHit?: string, killCount?: number, deathCount?: number, morbiums?: number) {
         this.discordId = discordId;
         this.ign = ign;
+        this.uuid = uuid;
         this.lastPlacedHit = (lastPlacedHit === undefined || lastPlacedHit == "none") ? false : new Date(lastPlacedHit);
         this.lastTargetedHit = (lastTargetedHit === undefined || lastTargetedHit == "none") ? false : new Date(lastTargetedHit);
         this.lastContractedHit = (lastContractedHit === undefined || lastContractedHit == "none") ? false : new Date(lastContractedHit);
         this.killCount = (killCount === undefined) ? 0 : killCount;
         this.deathCount = (deathCount === undefined) ? 0 : deathCount;
-        this.isAdmin = (isAdmin === undefined) ? false : isAdmin;
-
-        if (this.discordId === ADMIN_TOKEN)
-            this.isAdmin = true;
-
-        
+        this.morbiums = (morbiums === undefined) ? 0 : morbiums;
     }
 
     /**
@@ -42,28 +40,7 @@ export default class Player {
      * @returns string
      */
     get toString(): string {
-        return `${this.ign}@${this.discordId}; KC: ${this.killCount}; DC: ${this.deathCount}`;
-    }
-
-    /**
-     * Returns a JSON representation of this object.
-     * @returns JSON
-     */
-    get toJSON(): any {
-        const lph_string = (!this.lastPlacedHit) ? "none" : this.lastPlacedHit.toLocaleString();
-        const lth_string = (!this.lastTargetedHit) ? "none" : this.lastTargetedHit.toLocaleString();
-        const lch_string = (!this.lastContractedHit) ? "none" : this.lastContractedHit.toLocaleString();
-
-        return { 
-            discordId: this.discordId, 
-            ign: this.ign, 
-            lastPlacedHit: lph_string, 
-            lastTargetedHit: lth_string,
-            lastContractedHit: lch_string,
-            killCount: this.killCount,
-            deathCount: this.deathCount,
-            isAdmin: this.isAdmin
-        };
+        return `${this.ign}@${this.discordId}; KC: ${this.killCount}; DC: ${this.deathCount} MB: ${this.morbiums}`;
     }
 
     /**

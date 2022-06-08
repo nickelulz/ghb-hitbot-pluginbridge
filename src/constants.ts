@@ -29,6 +29,16 @@ import logger from './logger';
  export const TARGETING_COOLDOWN: number = 240;
 
 /**
+ * Whether or not the bot will start in debug mode. Enables many debug
+ * features of the discord bot such as outputting the parsed JSON in 
+ * database.ts and logger debug messages.
+ * 
+ * @type boolean
+ * @constant
+ */
+ export const DEBUG_MODE: boolean = false;
+
+/**
  * Default "image not found"/Error 404 Image URL for embeds and whatnot.
  * 
  * @type string
@@ -161,11 +171,11 @@ function noListenerPort() {
 
 /**
  * Warns that the plugin port is not set in .env and returns the default.
- * @returns {number} Default plugin port (3125)
+ * @returns {number} Default plugin port (3185)
  */
 function noPluginPort() {
-    logger.warn("No plugin endpoint port set. Setting as default (3125)");
-    return 3125;
+    logger.warn("No plugin endpoint port set. Setting as default (3185)");
+    return 3185;
 }
 
 /**

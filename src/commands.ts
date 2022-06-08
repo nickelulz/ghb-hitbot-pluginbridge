@@ -12,7 +12,6 @@ import Info from './commands/info'
 
 // Command Registry
 const commands: Command[] = [
-    // Non-Registered User Commands
     Help,
     Lookup,
     ListOnlinePlayers,

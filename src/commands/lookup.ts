@@ -1,7 +1,7 @@
 import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
 import Command from "../types/Command";
 import Player from "../types/Player";
-import { isContractor, findPlayerByIGN } from '../database'
+import { isContractor, findPlayerByIGN, load } from '../database'
 import { COMMAND_ERROR_MESSAGES, NOT_FOUND_IMG_URL } from "../constants";
 
 function contractorStatus(player: Player): string {
@@ -27,6 +27,9 @@ const Lookup: Command = {
     ],
     run: async (client: Client, interaction: BaseCommandInteraction) => {
         const response = new MessageEmbed();
+
+        load();
+
         const player = findPlayerByIGN(String(interaction.options.get("ign")?.value));
         if (!player)
             response.setDescription(COMMAND_ERROR_MESSAGES.PLAYER_NOT_FOUND);
@@ -38,8 +41,10 @@ const Lookup: Command = {
                 .setTitle('💡 PLAYER INFORMATION: ' + player.ign)
                 .setDescription(
                     '🎮 In-Game Name: ' + player.ign + '\n' +
+                    '🤖 UUID: ' + player.uuid + '\n' +
                     '🔪 Verified hit kills: ' + player.killCount + '\n' +
                     '🪦 Verified hit deaths: ' + player.deathCount + '\n' +
+                    '💰 Morbiums: M$' + player.morbiums + '\n' +
                     '⌛ Hit hiring cooldown: ' + player.hiringCooldownString + '\n' +
                     '⌛ Contracting cooldown: ' + player.contractingCooldownString + '\n' +
                     '⌛ Hit targetting cooldown: ' + player.targetingCooldownString + '\n' + 
@@ -55,9 +60,11 @@ const Lookup: Command = {
                 .setTitle('💡 PLAYER INFORMATION: ' + player.ign)
                 .setDescription(
                     '🎮 In-Game Name: ' + player.ign + '\n' +
+                    '🤖 UUID: ' + player.uuid + '\n' +
                     '📓 Discord Name: ' + player_discord.tag + '\n' +
                     '🔪 Verified hit kills: ' + player.killCount + '\n' +
                     '🪦 Verified hit deaths: ' + player.deathCount + '\n' +
+                    '💰 Morbiums: M$' + player.morbiums + '\n' +
                     '⌛ Hit hiring cooldown: ' + player.hiringCooldownString + '\n' +
                     '⌛ Contracting cooldown: ' + player.contractingCooldownString + '\n' +
                     '⌛ Hit targetting cooldown: ' + player.targetingCooldownString

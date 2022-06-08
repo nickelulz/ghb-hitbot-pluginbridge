@@ -1,14 +1,16 @@
 import DiscordJS, { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
 import Command from "../types/Command";
-import { hits } from '../database';
+import { hits, load } from '../database';
 import Bounty from '../types/Bounty';
 
 const ListBounties: Command = {
-    name: "help",
+    name: "listbounties",
     description: "Acts as the documentation for this bot.",
     type: "CHAT_INPUT",
     run: async (client: Client, interaction: BaseCommandInteraction) => {
         const response = new DiscordJS.MessageEmbed().setDescription("");
+
+        load();
 
         let counter = 1;
         for (let i = 0; i < hits.length; i++)

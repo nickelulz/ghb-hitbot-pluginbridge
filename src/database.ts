@@ -1,58 +1,77 @@
-import { Server } from './constants'; 
+import { Server, DEBUG_MODE } from './constants'; 
+import { api } from './main';
 import Hit from './types/Hit';
 import Bounty from './types/Bounty';
 import Contract from './types/Contract';
 import Player from './types/Player';
 import logger from './logger';
-import axios from 'axios';
 
 export const hits: Hit[] = [];
 export const players: Player[] = []; 
 
-const plugin_url = "http://localhost:" + Server.EndpointPort;
+export function load(): void {
+    players.length = 0;
+    hits.length = 0;
 
-function getDatabaseJSON(): void {
-    axios.get(plugin_url + "/players").then(response => {
+    api.get("/players").then(response => {
         if (response.status == 200)
             return response;
         else
             throw response.statusText;
     }).then(response => {
-        const players_JSON = JSON.parse(response.data);
+        if (!(response.data == undefined || response.data == "")) {
+            let players_JSON = response.data;
 
-        if (players_JSON == undefined || players_JSON == "") {
-            logger.error('Could not load player database.');
-            return;
+            if (players_JSON == undefined || players_JSON == "") {
+                logger.error('Could not load player database.');
+                return;
+            }
+
+            for (let i = 0; i < players_JSON.length; i++) {
+                const discordId: string = players_JSON[i]["discordId"];
+                const ign: string = players_JSON[i]["username"];
+                const uuid: string = players_JSON[i]["uuid"];
+                const lastPlacedHit: string = players_JSON[i]["lastPlacedHit"];
+                const lastTargetedHit: string = players_JSON[i]["lastTargetedHit"];
+                const lastContractedHit: string = players_JSON[i]["lastContractedHit"];
+                const killCount: number = players_JSON[i]["kills"];
+                const deathCount: number = players_JSON[i]["deaths"];
+                const morbiums: number = players_JSON[i]["morbiums"];
+                players.push(new Player(discordId, uuid, ign, lastPlacedHit, lastTargetedHit, lastContractedHit, killCount, deathCount, morbiums));
+            }
         }
 
-        for (let i = 0; i < players_JSON.length; i++) {
-            const discordId: string = players_JSON[i]["discordId"];
-            const ign: string = players_JSON[i]["ign"];
-            const lastPlacedHit: string = players_JSON[i]["lastPlacedHit"];
-            const lastTargetedHit: string = players_JSON[i]["lastTargetedHit"];
-            const lastContractedHit: string = players_JSON[i]["lastContractedHit"];
-            const killCount: number = players_JSON[i]["killCount"];
-            const deathCount: number = players_JSON[i]["deathCount"];
-            const isAdmin: boolean = players_JSON[i]["isAdmin"];
-            players.push(new Player(discordId, ign, lastPlacedHit, lastTargetedHit, lastContractedHit, killCount, deathCount, isAdmin));
-        }
-    });
-
-    axios.get(plugin_url + "/activehits").then(response => {
-        if (response.status == 200)
-            return response;
-        else
-            throw response.statusText;
-    }).then(response => {
-        const hits_JSON = JSON.parse(response.data);
-
-        if (hits_JSON == undefined || hits_JSON == "") {
-            logger.error('Could not load player database.');
-            return;
+        if (DEBUG_MODE) {
+            logger.debug('Dumping players:');
+            players.forEach(p => console.log(p.toString));
         }
 
-        parseJSONToArray(hits_JSON, hits);
-        logger.info("Loaded current completed hits JSON");
+        logger.info("Loaded current players JSON");
+    }).then(() => {
+        api.get("/activehits").then(response => {
+            if (response.status == 200)
+                return response;
+            else
+                throw response.statusText;
+        }).then(response => {
+            if (!(response.data == undefined || response.data == "")) {
+                let hits_JSON = response.data;
+    
+                if (hits_JSON == undefined || hits_JSON == "") {
+                    logger.error('Could not load player database.');
+                    return;
+                }
+    
+                parseJSONToArray(hits_JSON, hits);
+            }
+    
+            if (DEBUG_MODE) {
+                logger.debug('Dumping hits:');
+                hits.forEach(h => console.log(h.toString));
+            }
+    
+            logger.info("Loaded hits JSON");
+        });
     });
 }
 
@@ -66,8 +85,8 @@ function getDatabaseJSON(): void {
         const placer = findPlayerByIGN(json[i]["placer"]);
         const target = findPlayerByIGN(json[i]["target"]);
         const price: number = Number(json[i]["price"]);
-        const datePlaced: Date = new Date(json[i]["datePlaced"]);
-        const dateClaimed: Date | undefined = (json[i]["dateClaimed"] === "none") ? undefined : new Date(json[i]["dateClaimed"]);
+        const datePlaced: Date = new Date(json[i]["timePlaced"]);
+        const dateClaimed: Date | undefined = (json[i]["timeClaimed"] === "none") ? undefined : new Date(json[i]["timeClaimed"]);
 
         const claimer_raw = findPlayerByIGN(json[i]["claimer"]);
         const claimer: Player | undefined = (claimer_raw === false) ? undefined : claimer_raw; 

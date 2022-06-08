@@ -2,6 +2,7 @@ import { Client } from "discord.js";
 import logger from '../logger'
 import commands from '../commands'
 import { getServerStatus } from "../server";
+import { load } from '../database';
 
 export default (client: Client): void => {
     client.on("ready", async () => {
@@ -27,5 +28,8 @@ export default (client: Client): void => {
 
         // Init data
         getServerStatus();
+
+        // load database
+        load();
     });
 }; 
