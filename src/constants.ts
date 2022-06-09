@@ -36,7 +36,7 @@ import logger from './logger';
  * @type boolean
  * @constant
  */
- export const DEBUG_MODE: boolean = false;
+ export const DEBUG_MODE: boolean = true;
 
 /**
  * Default "image not found"/Error 404 Image URL for embeds and whatnot.
@@ -116,7 +116,10 @@ const SERVER_RULES: string = '**Rules (and other non-rules):**\n' +
 '5. No conspiring with others to gang up on hits. Hits are meant to be 1v1 fair fights each time.\n\n' +
 '6. Once the ender dragon is defeated, the seed is released and you can use ChunkBase and etc as much as you\'d like. These services are banned prior to this.\n\n' +
 '7. Breaking the rules of the server is punishable by just light court sentences (paying diamonds, usually) for small stuff (like hit or land disputes) and getting banned from this server and future servers for big stuff (server wide grief)\n\n' +
-'8. People have a land claim (as in they control everything from bedrock to build limit) within 200 blocks radius of their base. This only applies if they are not within the 300 block radius of spawn, however. This also doesn\'t apply if they specifically state the borders of their base.';
+'8. People have a land claim (as in they control everything from bedrock to build limit) within 200 blocks radius of their base. This only applies if they are not within the 300 block radius of spawn, however. This also doesn\'t apply if they specifically state the borders of their base.\n\n' + 
+"9. If somebody dies, they drop all of the player heads in their inventory. **They are free game to steal.**\n\n" +
+"10. After placing a hit, if it is completed successfully (your target dies) then you get a morbium. You can use these however you\'d like, and transfer them with \`/transfer\`\n\n" +
+"11. Have fun.";
 
 /**
  * DO NOT CONFIGURE BEYOND HERE,

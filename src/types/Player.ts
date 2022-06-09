@@ -40,7 +40,7 @@ export default class Player {
      * @returns string
      */
     get toString(): string {
-        return `${this.ign}@${this.discordId}; KC: ${this.killCount}; DC: ${this.deathCount} MB: ${this.morbiums}`;
+        return `${this.ign}@${this.discordId}; KC: ${this.killCount}; DC: ${this.deathCount} M$: ${this.morbiums}`;
     }
 
     /**

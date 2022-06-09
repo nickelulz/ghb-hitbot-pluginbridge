@@ -9,70 +9,81 @@ import logger from './logger';
 export const hits: Hit[] = [];
 export const players: Player[] = []; 
 
+const cacheTime = 5 * 60 * 1000; // 5 min cachetime
+let lastUpdated = 0;
+
 export function load(): void {
-    players.length = 0;
-    hits.length = 0;
+    if (Date.now() > lastUpdated + cacheTime || (players.length == 0 && hits.length == 0)) {
+        players.length = 0;
+        hits.length = 0;
 
-    api.get("/players").then(response => {
-        if (response.status == 200)
-            return response;
-        else
-            throw response.statusText;
-    }).then(response => {
-        if (!(response.data == undefined || response.data == "")) {
-            let players_JSON = response.data;
-
-            if (players_JSON == undefined || players_JSON == "") {
-                logger.error('Could not load player database.');
-                return;
-            }
-
-            for (let i = 0; i < players_JSON.length; i++) {
-                const discordId: string = players_JSON[i]["discordId"];
-                const ign: string = players_JSON[i]["username"];
-                const uuid: string = players_JSON[i]["uuid"];
-                const lastPlacedHit: string = players_JSON[i]["lastPlacedHit"];
-                const lastTargetedHit: string = players_JSON[i]["lastTargetedHit"];
-                const lastContractedHit: string = players_JSON[i]["lastContractedHit"];
-                const killCount: number = players_JSON[i]["kills"];
-                const deathCount: number = players_JSON[i]["deaths"];
-                const morbiums: number = players_JSON[i]["morbiums"];
-                players.push(new Player(discordId, uuid, ign, lastPlacedHit, lastTargetedHit, lastContractedHit, killCount, deathCount, morbiums));
-            }
-        }
-
-        if (DEBUG_MODE) {
-            logger.debug('Dumping players:');
-            players.forEach(p => console.log(p.toString));
-        }
-
-        logger.info("Loaded current players JSON");
-    }).then(() => {
-        api.get("/activehits").then(response => {
+        api.get("/players").then(response => {
             if (response.status == 200)
                 return response;
             else
                 throw response.statusText;
         }).then(response => {
+            lastUpdated = Date.now();
+            lastUpdated = Math.min(lastUpdated, Date.now()); // Last updated time can't be in the future
+            lastUpdated = Math.max(lastUpdated, Date.now() - cacheTime + 60000); // Wait at least 1 minute
+
             if (!(response.data == undefined || response.data == "")) {
-                let hits_JSON = response.data;
+                let players_JSON = response.data;
     
-                if (hits_JSON == undefined || hits_JSON == "") {
+                if (players_JSON == undefined || players_JSON == "") {
                     logger.error('Could not load player database.');
                     return;
                 }
     
-                parseJSONToArray(hits_JSON, hits);
+                //console.log(players_JSON);
+    
+                for (let i = 0; i < players_JSON.length; i++) {
+                    const discordId: string = players_JSON[i]["discordId"];
+                    const ign: string = players_JSON[i]["username"];
+                    const uuid: string = players_JSON[i]["uuid"];
+                    const lastPlacedHit: string = players_JSON[i]["lastPlacedHit"];
+                    const lastTargetedHit: string = players_JSON[i]["lastTargetedHit"];
+                    const lastContractedHit: string = players_JSON[i]["lastContractedHit"];
+                    const killCount: number = players_JSON[i]["kills"];
+                    const deathCount: number = players_JSON[i]["deaths"];
+                    const morbiums: number = players_JSON[i]["morbiums"];
+                    players.push(new Player(discordId, uuid, ign, lastPlacedHit, lastTargetedHit, lastContractedHit, killCount, deathCount, morbiums));
+                }
             }
     
             if (DEBUG_MODE) {
-                logger.debug('Dumping hits:');
-                hits.forEach(h => console.log(h.toString));
+                logger.debug('Dumping players:');
+                players.forEach(p => console.log(p.toString));
             }
     
-            logger.info("Loaded hits JSON");
+            logger.info("Loaded current players JSON");
+        }).then(() => {
+            api.get("/activehits").then(response => {
+                if (response.status == 200)
+                    return response;
+                else
+                    throw response.statusText;
+            }).then(response => {
+                if (!(response.data == undefined || response.data == "")) {
+                    let hits_JSON = response.data;
+        
+                    if (hits_JSON == undefined || hits_JSON == "") {
+                        logger.error('Could not load player database.');
+                        return;
+                    }
+        
+                    parseJSONToArray(hits_JSON, hits);
+                }
+        
+                if (DEBUG_MODE) {
+                    logger.debug('Dumping hits:');
+                    hits.forEach(h => console.log(h.toString));
+                }
+        
+                logger.info("Loaded hits JSON");
+            });
         });
-    });
+    }
 }
 
 /**

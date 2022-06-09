@@ -84,8 +84,10 @@ server.post('/register/name', (req: Request, res: Response) => {
 
 server.post('/dm', (req: Request, res: Response) => {
     try {
-        direct_message_id(req.body["id"], new MessageEmbed().setDescription(req.body["message"]));
-        res.sendStatus(200);
+        if (direct_message_id(req.body["id"], new MessageEmbed().setDescription(req.body["message"])))
+            res.sendStatus(200);
+        else
+            res.sendStatus(500);
     } catch (err) {
         res.sendStatus(500);
     }
