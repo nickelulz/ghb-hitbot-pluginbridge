@@ -82,6 +82,9 @@ server.post('/register/name', (req: Request, res: Response) => {
     }
 });
 
+/**
+ * Direct Message
+ */
 server.post('/dm', (req: Request, res: Response) => {
     try {
         if (direct_message_id(req.body["id"], new MessageEmbed().setDescription(req.body["message"])))
@@ -103,7 +106,10 @@ function direct_message_name(username: string, message: MessageEmbed): boolean {
 
     else {
         try {
-            user_discord.send({ embeds: [ message ] });
+            user_discord.send({ embeds: [ message ] }).catch((err: any) => {
+                logger.warn(`Cannot message user ${user_discord.username}.`);
+                return false;
+            });
         }
         catch (err: any) {
             logger.warn(`Cannot message user ${user_discord.username}.`);
@@ -123,7 +129,10 @@ function direct_message_id(id: string, message: MessageEmbed): boolean {
 
     else {
         try {
-            user_discord.send({ embeds: [ message ] });
+            user_discord.send({ embeds: [ message ] }).catch((err: any) => {
+                logger.warn(`Cannot message user ${user_discord.username}.`);
+                return false;
+            });
             return true;
         }
         catch (err: any) {

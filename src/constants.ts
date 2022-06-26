@@ -36,7 +36,7 @@ import logger from './logger';
  * @type boolean
  * @constant
  */
- export const DEBUG_MODE: boolean = true;
+ export const DEBUG_MODE: boolean = false;
 
 /**
  * Default "image not found"/Error 404 Image URL for embeds and whatnot.
